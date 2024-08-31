@@ -1,0 +1,28 @@
+{
+    "product_id": "fghjlk",
+    "product_name": "dfghbjk",
+    "product_description": "hesdfkjeshfli",
+    "product_price": 514.54,
+    "product_category": "jefkjdsf",
+    "product_image": [
+        "lsdkf",
+        "kiefjoiaesj"
+    ],
+    "product_inStock": true,
+    "product_variants": {
+        "color": "Red",
+        "size": "M",
+        "stockLevel": 15
+    },
+    "seller": {
+        "seller_name": "gfhjlkjhvbghji",
+        "seller_PhoneNumber": 456465,
+        "seller_email": "isdjfaoieej",
+        "seller_address": {
+            "city": "lshjdfkj",
+            "state": "ksghdfuih",
+            "pinCode": 4546545
+        }
+    },
+     "product_createdAt": "2024-08-31T12:00:00Z"
+}
