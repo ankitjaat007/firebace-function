@@ -1,35 +1,53 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebace_practice/Network/firebase_function.dart';
-import 'package:firebace_practice/model/firebase_response_model.dart';
 import 'package:firebace_practice/model/product_model.dart';
 import 'package:flutter/material.dart';
 
 class ProductController extends ChangeNotifier {
   final _firebaseFunction = FirebaseFunction();
   final _firestore = FirebaseFirestore.instance;
-  // final List<ProductModel> _productdata = [];
-  // List<ProductModel> get productdata => _productdata;
+  final List<ProductModel> _productdata = [];
+  List<ProductModel> get productdata => _productdata;
 
+  // lodding circle
+  bool _loding = false;
+  bool get getLoding => _loding;
+  setLoader(bool value) {
+    _loding = value;
+    notifyListeners();
+  }
+
+// set Variants
+
+  List<ProductVariantsModel> _variant = [];
+  List<ProductVariantsModel> get variantdata => _variant;
+
+  // setvariant(List<ProductVariantsModel> model) {
+  //   _variant = model;
+  //   notifyListeners();
+  // }
+
+  addvariant(ProductVariantsModel variant) {
+    _variant.add(variant);
+    notifyListeners();
+  }
+
+  removevariant(ProductVariantsModel variant) {
+    _variant.remove(variant);
+    notifyListeners();
+  }
   // SET DATA
 
-  // Future<void> setProduct(ProductModel model) async {
-  //   try {
-  //     final response = _firebaseFunction.post(_firestore.collection("product"),
-  //         model.toAddProduct(), PostDataType.ADD) as FirebaseResponseModel;
-  //     if (response.docId.isNotEmpty) {
-  //       ProductModel data = ProductModel.fromProduct(response);
-
-  //       await _firebaseFunction.post(
-  //           _firestore.collection("product").doc(response.docId),
-  //           data.toAddProduct(),
-  //           PostDataType.UPDATE);
-
-  //       _productdata.add(data);
-  //     }
-  //   } catch (e) {
-  //     print(e.toString());
-  //   } finally {
-  //     notifyListeners();
-  //   }
-  // }
+  Future<void> setProduct(ProductModel model) async {
+    try {
+      setLoader(true);
+      await _firebaseFunction.post(
+          _firestore.collection("product"), model.toAddProduct());
+    } catch (e) {
+      setLoader(false);
+      print(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
 }

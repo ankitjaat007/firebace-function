@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, non_constant_identifier_names
 import 'package:firebace_practice/model/firebase_response_model.dart';
 
 // class ProductModel {
@@ -106,3 +106,97 @@ import 'package:firebace_practice/model/firebase_response_model.dart';
 //             .map((e) => ProductModel.fromOrder(FirebaseResponseModel(e, '')))
 //             .toList();
 // }
+// ===============================================================
+// ===============================================================
+// ===============================================================
+// ===============================================================
+class ProductModel {
+  String? product_id,
+      product_name,
+      product_description,
+      product_category,
+      product_createdAt;
+  double? product_price;
+  bool? product_inStock;
+  List<String>? product_image;
+  List<ProductVariantsModel>? product_variants;
+  SellerModel? seller;
+  ProductModel(
+      {this.product_id,
+      this.product_name,
+      this.product_description,
+      this.product_category,
+      this.product_createdAt,
+      this.product_price,
+      this.product_inStock,
+      this.product_image,
+      this.product_variants,
+      this.seller});
+  Map<String, dynamic> toAddProduct() {
+    return {
+      "product_id": product_id ?? '',
+      "product_name": product_name ?? '',
+      "product_description": product_description ?? '',
+      "product_category": product_category ?? '',
+      "product_createdAt": product_createdAt ?? DateTime.now(),
+      "product_price": product_price ?? 0.0,
+      "product_inStock": product_inStock ?? false,
+      "product_image": product_image != null && product_image!.isNotEmpty
+          ? product_image!.map((e) => e.toString())
+          : [],
+      "product_variants":
+          product_variants != null && product_variants!.isNotEmpty
+              ? product_variants!.map((e) => e.toAddProductVariant()).toList()
+              : [],
+      "seller": seller == null ? {} : seller!.toAddSaller()
+    };
+  }
+}
+
+// ProductVariants Model******
+class ProductVariantsModel {
+  String? color, size;
+  int? stockLevel;
+  ProductVariantsModel({this.color, this.size, this.stockLevel});
+  Map<String, dynamic> toAddProductVariant() {
+    return {
+      "color": color ?? '',
+      "size": size ?? '',
+      "stockLevel": stockLevel ?? 0,
+    };
+  }
+}
+
+// seller model******
+class SellerModel {
+  String? seller_name, seller_email;
+  int? seller_PhoneNumber;
+  AddressModel? address;
+  SellerModel(
+      {this.seller_name,
+      this.seller_email,
+      this.seller_PhoneNumber,
+      this.address});
+  Map<String, dynamic> toAddSaller() {
+    return {
+      "seller_name": seller_name ?? '',
+      "seller_email": seller_email ?? '',
+      "seller_PhoneNumber": seller_PhoneNumber ?? 0,
+      "address": address == null ? {} : address!.toAddAddress()
+    };
+  }
+}
+
+//  address model**********
+class AddressModel {
+  String? city, state;
+  int? pinCode;
+  AddressModel({this.city, this.state, this.pinCode});
+  Map<String, dynamic> toAddAddress() {
+    return {
+      "city": city ?? '',
+      "state": state ?? '',
+      "pinCode": pinCode ?? 0,
+    };
+  }
+}
