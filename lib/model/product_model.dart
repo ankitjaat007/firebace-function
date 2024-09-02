@@ -132,6 +132,8 @@ class ProductModel {
       this.product_image,
       this.product_variants,
       this.seller});
+
+  // to product
   Map<String, dynamic> toAddProduct() {
     return {
       "product_id": product_id ?? '',
@@ -151,6 +153,29 @@ class ProductModel {
       "seller": seller == null ? {} : seller!.toAddSaller()
     };
   }
+
+  //   // FROM PRODUCT
+  ProductModel.fromProduct(FirebaseResponseModel json)
+      : product_id = json.docId,
+        product_name = json.data["product_name"] ?? "",
+        product_description = json.data["product_description"] ?? "",
+        product_category = json.data["product_category"] ?? "",
+        product_createdAt = json.data["product_createdAt"] ?? "",
+        product_price = json.data["product_price"] ?? 0.0,
+        product_inStock = json.data["product_inStock"] ?? false,
+        product_image = (json.data['product_image'] as List) == Null
+            ? []
+            : (json.data['product_image'] as List)
+                .map((e) => e.toString())
+                .toList(),
+        product_variants = json.data['product_variants'] == null
+            ? []
+            : (json.data['product_variants'] as List)
+                .map((e) => ProductVariantsModel.fromvariant(e))
+                .toList(),
+        seller = json.data['seller'] == null
+            ? null
+            : SellerModel.fromseller(json.data["seller"]);
 }
 
 // ProductVariants Model******
@@ -165,6 +190,11 @@ class ProductVariantsModel {
       "stockLevel": stockLevel ?? 0,
     };
   }
+
+  ProductVariantsModel.fromvariant(Map<String, dynamic> json)
+      : color = json["color"] ?? '',
+        size = json['size'] ?? '',
+        stockLevel = json["stockLevel"] ?? 0;
 }
 
 // seller model******
@@ -185,6 +215,14 @@ class SellerModel {
       "address": address == null ? {} : address!.toAddAddress()
     };
   }
+
+  SellerModel.fromseller(Map<String, dynamic> json)
+      : seller_name = json['seller_name'] ?? '',
+        seller_email = json['seller_email'] ?? '',
+        seller_PhoneNumber = json['seller_PhoneNumber'] ?? 0,
+        address = json['address'] == null
+            ? null
+            : AddressModel.fromaddress(json["address"]);
 }
 
 //  address model**********
@@ -199,4 +237,9 @@ class AddressModel {
       "pinCode": pinCode ?? 0,
     };
   }
+
+  AddressModel.fromaddress(Map<String, dynamic> json)
+      : city = json['city'] ?? '',
+        state = json['state'] ?? '',
+        pinCode = json['pinCode'] ?? '';
 }
