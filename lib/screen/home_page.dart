@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
 
   data() async {
     final db = Provider.of<ProductController>(context, listen: false);
-    await db.getproduct();
+    await db.fetchProducts();
   }
 
   @override
@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                   IconButton(
                       onPressed: () {
                         provider
-                            .deletdata(product[index].product_id.toString());
+                            .deletedata(product[index].product_id.toString());
                       },
                       icon: CircleAvatar(
                           child: Icon(Icons.delete_outline_rounded)))

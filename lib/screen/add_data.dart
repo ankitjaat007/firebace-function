@@ -4,6 +4,7 @@ import 'package:firebace_practice/screen/dummy_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class AddData extends StatefulWidget {
   ProductModel? productModel;
   AddData({super.key, this.productModel});
@@ -29,6 +30,7 @@ class _AddDataState extends State<AddData> {
   final city = TextEditingController();
   final state = TextEditingController();
   final pincode = TextEditingController();
+  List<ProductVariantsModel> productVariant = [];
 
   @override
   void initState() {
@@ -37,51 +39,24 @@ class _AddDataState extends State<AddData> {
   }
 
   textvalue() {
-    widget.productModel == null
-        ? namecontroler.text
-        : namecontroler.text = widget.productModel!.product_name.toString();
-    widget.productModel == null
-        ? prizecontroler.text
-        : prizecontroler.text = widget.productModel!.product_price.toString();
-    widget.productModel == null
-        ? descriptioncontroler.text
-        : descriptioncontroler.text =
-            widget.productModel!.product_description.toString();
-    widget.productModel == null
-        ? categorycontroler.text
-        : categorycontroler.text =
-            widget.productModel!.product_category.toString();
-    // widget.productModel == null
-    //     ? _selctTime
-    //     : _selctTime = widget.productModel!.product_createdAt as TimeOfDay;
-    widget.productModel == null
-        ? _selectedisActive
-        : _selectedisActive = widget.productModel!.product_inStock;
-    // final db = Provider.of<ProductModel>(context, listen: false);
-    // widget.productModel == null
-    //     ? []
-    //     : widget.productModel!.product_variants = db.variantdata;
-    widget.productModel == null
-        ? sellername.text
-        : sellername.text = widget.productModel!.seller!.seller_name.toString();
-    widget.productModel == null
-        ? sellerphone.text
-        : sellerphone.text =
-            widget.productModel!.seller!.seller_PhoneNumber.toString();
-    widget.productModel == null
-        ? selleremail.text
-        : selleremail.text =
-            widget.productModel!.seller!.seller_email.toString();
-    widget.productModel == null
-        ? city.text
-        : city.text = widget.productModel!.seller!.address!.city.toString();
-    widget.productModel == null
-        ? state.text
-        : state.text = widget.productModel!.seller!.address!.state.toString();
-    widget.productModel == null
-        ? pincode.text
-        : pincode.text =
-            widget.productModel!.seller!.address!.pinCode.toString();
+    if (widget.productModel != null) {
+      // _selctTime =
+      //     widget.productModel!.product_createdAt.toString() as TimeOfDay;
+      productVariant = widget.productModel!.product_variants!;
+      namecontroler.text = widget.productModel!.product_name.toString();
+      prizecontroler.text = widget.productModel!.product_price.toString();
+      descriptioncontroler.text =
+          widget.productModel!.product_description.toString();
+      categorycontroler.text = widget.productModel!.product_category.toString();
+      sellername.text = widget.productModel!.seller!.seller_name.toString();
+      _selectedisActive = widget.productModel!.product_inStock;
+      sellerphone.text =
+          widget.productModel!.seller!.seller_PhoneNumber.toString();
+      selleremail.text = widget.productModel!.seller!.seller_email.toString();
+      city.text = widget.productModel!.seller!.address!.city.toString();
+      state.text = widget.productModel!.seller!.address!.state.toString();
+      pincode.text = widget.productModel!.seller!.address!.pinCode.toString();
+    }
   }
 
   @override
@@ -263,12 +238,17 @@ class _AddDataState extends State<AddData> {
                                 ),
                                 TextButton(
                                     onPressed: () {
-                                      provider.addvariant(ProductVariantsModel(
+                                      final data = ProductVariantsModel(
                                           color: _selectedcolor,
                                           size: _selectedsize,
                                           stockLevel: int.parse(
-                                              stockLevelcontroler.text)));
+                                              stockLevelcontroler.text));
+                                      productVariant.add(data);
                                       Navigator.pop(context);
+                                      _selectedcolor = null;
+                                      _selectedsize = null;
+                                      stockLevelcontroler.clear();
+                                      setState(() {});
                                     },
                                     child: Text("add"))
                               ],
@@ -282,7 +262,7 @@ class _AddDataState extends State<AddData> {
             ),
             Wrap(children: [
               ...List.generate(
-                provider.variantdata.length,
+                productVariant.length,
                 (index) => Stack(alignment: Alignment.topRight, children: [
                   Container(
                     color: Colors.blueGrey,
@@ -293,16 +273,16 @@ class _AddDataState extends State<AddData> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text("color:  ${provider.variantdata[index].color}"),
-                        Text("size:  ${provider.variantdata[index].size}"),
-                        Text(
-                            "stockLevel:  ${provider.variantdata[index].stockLevel}")
+                        Text("color:  ${productVariant[index].color}"),
+                        Text("size:  ${productVariant[index].size}"),
+                        Text("stockLevel:  ${productVariant[index].stockLevel}")
                       ],
                     ),
                   ),
                   IconButton(
                       onPressed: () {
-                        provider.removevariant(provider.variantdata[index]);
+                        productVariant.remove(productVariant[index]);
+                        setState(() {});
                       },
                       icon: Icon(
                         Icons.close,
@@ -332,7 +312,6 @@ class _AddDataState extends State<AddData> {
             ),
             TextField(
               controller: selleremail,
-              keyboardType: TextInputType.number,
               decoration: InputDecoration(label: Text("seller email")),
             ),
             Text("seller address :"),
@@ -360,44 +339,26 @@ class _AddDataState extends State<AddData> {
             ),
             TextButton(
               onPressed: () {
+                final newproduct = ProductModel(
+                    product_name: namecontroler.text,
+                    product_price: double.parse(prizecontroler.text),
+                    product_description: descriptioncontroler.text,
+                    product_category: categorycontroler.text,
+                    product_createdAt: _selctTime.toString(),
+                    product_inStock: _selectedisActive,
+                    product_variants: productVariant,
+                    seller: SellerModel(
+                        seller_name: sellername.text,
+                        seller_PhoneNumber: int.parse(sellerphone.text),
+                        seller_email: selleremail.text,
+                        address: AddressModel(
+                            city: city.text,
+                            state: state.text,
+                            pinCode: int.parse(pincode.text))));
                 widget.productModel == null
-                    ? provider.setProduct(
-                        ProductModel(
-                            product_name: namecontroler.text,
-                            product_price: double.parse(prizecontroler.text),
-                            product_description: descriptioncontroler.text,
-                            product_category: categorycontroler.text,
-                            product_createdAt: _selctTime.toString(),
-                            product_inStock: _selectedisActive,
-                            product_variants: provider.variantdata,
-                            seller: SellerModel(
-                                seller_name: sellername.text,
-                                seller_PhoneNumber: int.parse(sellerphone.text),
-                                seller_email: selleremail.text,
-                                address: AddressModel(
-                                    city: city.text,
-                                    state: state.text,
-                                    pinCode: int.parse(pincode.text)))),
-                        context)
-                    : provider.UpdateProduct(
-                        ProductModel(
-                            product_name: namecontroler.text,
-                            product_price: double.parse(prizecontroler.text),
-                            product_description: descriptioncontroler.text,
-                            product_category: categorycontroler.text,
-                            product_createdAt: _selctTime.toString(),
-                            product_inStock: _selectedisActive,
-                            product_variants: provider.variantdata,
-                            seller: SellerModel(
-                                seller_name: sellername.text,
-                                seller_PhoneNumber: int.parse(sellerphone.text),
-                                seller_email: selleremail.text,
-                                address: AddressModel(
-                                    city: city.text,
-                                    state: state.text,
-                                    pinCode: int.parse(pincode.text)))),
-                        widget.productModel!.product_id!,
-                        context);
+                    ? provider.addProduct(newproduct, context)
+                    : provider.updateProduct(
+                        newproduct, widget.productModel!.product_id!, context);
               },
               style: const ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(Colors.greenAccent)),

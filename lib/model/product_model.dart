@@ -136,7 +136,7 @@ class ProductModel {
   // to product
   Map<String, dynamic> toAddProduct() {
     return {
-      "product_id": product_id ?? '',
+      // "product_id": product_id ?? '',
       "product_name": product_name ?? '',
       "product_description": product_description ?? '',
       "product_category": product_category ?? '',
