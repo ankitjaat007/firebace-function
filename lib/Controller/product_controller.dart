@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebace_practice/Network/firebase_api.dart';
 import 'package:firebace_practice/Network/firebase_function.dart';
 import 'package:firebace_practice/model/firebase_response_model.dart';
@@ -19,7 +20,7 @@ class ProductController extends ChangeNotifier {
       if (response!.docId.isNotEmpty) {
         final data = ProductModel.fromProduct(response);
         _productdata.add(data);
-        Navigator.pop(context);
+        // Navigator.pop(context);
         notifyListeners();
       }
     } catch (e) {
@@ -76,4 +77,36 @@ class ProductController extends ChangeNotifier {
       rethrow;
     }
   }
+
+  final firebaseservice = FirebaseFirestore.instance;
+// havey call in firebase for dlt the multiple product id
+  // Future<void> multipleDlt(List<String> productId) async {
+  //   try {
+  //     for (var id in productId) {
+  //       await _firebaseFunction.deleteData(FirebaseApis.productDocumentRef(id));
+
+  //       notifyListeners();
+  //     }
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+
+// batch call in firebase for dlt the multiple product
+  Future<void> multipleDltwithbatch(List<String> productId) async {
+    final batch = firebaseservice.batch();
+
+    try {
+      for (var id in productId) {
+        batch.delete(FirebaseApis.productDocumentRef(id));
+        _productdata.removeWhere((e) => e.product_id == id);
+      }
+      await batch.commit();
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+// batch call in firebase for update the multiple product
 }
