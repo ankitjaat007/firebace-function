@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print(selectedItemsID);
+    // print(selectedItemsID);
     final provider = Provider.of<ProductController>(context);
     final product = provider.productdata;
 
@@ -36,7 +36,12 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AddData(
+                                selectedItemsID: selectedItemsID,
+                              )));
+                    },
                     icon: CircleAvatar(child: Icon(Icons.edit_note_outlined))),
                 IconButton(
                     onPressed: () {

@@ -6,8 +6,9 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class AddData extends StatefulWidget {
+  List<String>? selectedItemsID;
   ProductModel? productModel;
-  AddData({super.key, this.productModel});
+  AddData({super.key, this.productModel, this.selectedItemsID});
 
   @override
   State<AddData> createState() => _AddDataState();
@@ -62,8 +63,8 @@ class _AddDataState extends State<AddData> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductController>(context);
-    // print(provider.variantdata.length);
-    // print("***************************");
+    print(widget.selectedItemsID);
+    print("***************************");
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -355,10 +356,24 @@ class _AddDataState extends State<AddData> {
                             city: city.text,
                             state: state.text,
                             pinCode: int.parse(pincode.text))));
-                widget.productModel == null
-                    ? provider.addProduct(newproduct, context)
-                    : provider.updateProduct(
-                        newproduct, widget.productModel!.product_id!, context);
+
+                if (widget.selectedItemsID != null) {
+                  provider.mulipleUpdateWithbatch(
+                      widget.selectedItemsID!, newproduct, context);
+                } else if (widget.productModel == null) {
+                  provider.addProduct(newproduct, context);
+                } else {
+                  provider.updateProduct(
+                      newproduct, widget.productModel!.product_id!, context);
+                }
+
+                // widget.productModel == null
+                //     ? provider.addProduct(newproduct, context)
+                //     : widget.selectedItemsID == null
+                //         ? provider.updateProduct(newproduct,
+                //             widget.productModel!.product_id!, context)
+                //         : provider.mulipleUpdateWithbatch(
+                //             widget.selectedItemsID!, newproduct, context);
               },
               style: const ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(Colors.greenAccent)),

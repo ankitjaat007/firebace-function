@@ -109,4 +109,23 @@ class ProductController extends ChangeNotifier {
   }
 
 // batch call in firebase for update the multiple product
+  Future<void> mulipleUpdateWithbatch(
+      List<String> productId, ProductModel model, BuildContext context) async {
+    final batch = firebaseservice.batch();
+    try {
+      for (var id in productId) {
+        batch.update(FirebaseApis.productDocumentRef(id), model.toAddProduct());
+
+        final index = _productdata.indexWhere(
+          (element) => element.product_id == id,
+        );
+        _productdata[index] = model;
+        // Navigator.pop(context);
+      }
+      await batch.commit();
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
