@@ -1,5 +1,6 @@
 import 'package:firebace_practice/Controller/product_controller.dart';
 import 'package:firebace_practice/screen/add_data.dart';
+import 'package:firebace_practice/screen/stream_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,6 +54,16 @@ class _HomePageState extends State<HomePage> {
             )
           : null,
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => StreamBuilderScreen(),
+              ));
+            },
+            icon: Icon(Icons.filter_vintage_outlined),
+          )
+        ],
         centerTitle: true,
         title: Text("Home page"),
       ),

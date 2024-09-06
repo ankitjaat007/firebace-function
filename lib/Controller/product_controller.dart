@@ -128,4 +128,13 @@ class ProductController extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Stream<QuerySnapshot> getDataStrim() {
+    try {
+      var respose = firebaseservice.collection("product").snapshots();
+      return respose;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
